@@ -160,6 +160,30 @@ BD cuando aportas un dump; y deriva entre dos escaneos del mismo sitio.
 privilegios del servidor web (`www-data`) y sin root. Bajo ese modelo el ctime es
 el ancla temporal fiable. Se declara para que el lector juzgue dónde se sostiene.
 
+## Estado y almacenamiento
+
+J0Witness persiste en una **base de datos SQLite embebida** (Go puro
+`modernc.org/sqlite` — sin CGO, sin librería del sistema; el motor se compila
+dentro del binario). No hay nada que activar: cada `scan` escribe en ella
+automáticamente.
+
+Los archivos de la base viven en el **directorio de trabajo** (`--workdir`, por
+defecto `~/.local/state/j0witness/`) — jamás dentro del repositorio ni del árbol
+analizado:
+
+- `state.sqlite` — el registro de baselines (lo que incorporas con `baseline add`
+  / `baseline fetch`). Compartido entre objetivos.
+- `inv-<hash>.sqlite` — **uno por objetivo escaneado** (clave = hash de la ruta del
+  objetivo). Cada escaneo de ese objetivo añade un *run* a las tablas `runs` /
+  `entries` / `observations`. Este es el substrato de eventos que permite que
+  `report` re-renderice y `diff` compare **sin volver a tocar el árbol**.
+
+Controla la ubicación con `--workdir`; lista los runs persistidos de un objetivo
+con `j0witness runs <objetivo>`. Estos archivos crecen con el tamaño del inventario
+y se acumulan entre runs — borrar un `inv-*.sqlite` descarta el historial de
+escaneos de ese objetivo (el siguiente scan lo recrea); nunca se escribe dentro del
+sitio que analizas.
+
 ## Documentación
 
 - **[Arquitectura](docs/ARQUITECTURA.md)** ([English](docs/ARCHITECTURE.md)) — capas, flujo de datos, modelo de confianza, diagramas.

@@ -11,12 +11,12 @@
 ![i18n](https://img.shields.io/badge/i18n-en%20%7C%20es-informational)
 ![License](https://img.shields.io/badge/license-MIT-2ea44f)
 
-> **Read this in other languages:** [EspaÃ±ol](README.es.md)
+> **Read this in other languages:** [Español](README.es.md)
 
 **J0Witness is an offline integrity and forensic analyzer for Joomla installations.**
 
-It determines â without the site being live, and without needing a prior baseline
-of your own â how a Joomla installation on disk differs from the original vendor
+It determines — without the site being live, and without needing a prior baseline
+of your own — how a Joomla installation on disk differs from the original vendor
 distribution, and presents those differences with enough evidence and provenance
 for a human to decide whether a compromise occurred.
 
@@ -31,11 +31,11 @@ mutates the very evidence it is inspecting. J0Witness is built the opposite way:
 
 - **Offline and self-contained.** A single static binary. No PHP runtime, no
   database, no network by default. Copy it to the host and run it.
-- **The analyzed tree is evidence â never written to.** J0Witness only reads.
+- **The analyzed tree is evidence — never written to.** J0Witness only reads.
 - **It never executes the analyzed code.** All PHP/config analysis is static text
   analysis; the tree is never run.
 - **Deterministic and reproducible.** The same (tree, baseline, binary, flags)
-  produces byte-identical output, and the binary itself is a reproducible build â
+  produces byte-identical output, and the binary itself is a reproducible build —
   both properties matter when the report is used as evidence.
 - **A false positive is treated as a severe defect.** The engine degrades toward
   silence rather than crying wolf; every finding is meant to be actionable.
@@ -44,13 +44,13 @@ mutates the very evidence it is inspecting. J0Witness is built the opposite way:
 
 J0Witness composes independent analysis layers, each reading the already-captured
 evidence and contributing observations. Verdicts (findings) are **derived by
-query** from those observations â never stored as primary truth â so a report can
+query** from those observations — never stored as primary truth — so a report can
 be re-rendered from a persisted scan without re-touching the tree.
 
 | Layer | What it does | Rules |
 |------|---------------|-------|
-| **L0** acquire | Deterministic inventory: hash, metadata, size. Read-only. | â |
-| **L1** fingerprint | Fuzzy hashing (TLSH) to pair modified files with their original. | â |
+| **L0** acquire | Deterministic inventory: hash, metadata, size. Read-only. | — |
+| **L1** fingerprint | Fuzzy hashing (TLSH) to pair modified files with their original. | — |
 | **L2** core-diff | Diff against the official Joomla distribution: added / modified / deleted core files. | `J0W-CORE-*` |
 | **L3** ext-map | Discovers third-party extensions by manifest and attributes each file to its declaring extension. | `J0W-EXT-*`, `J0W-LAYOUT-001` |
 | **L4** code-scan | Static PHP content analysis (never executes): webshells, obfuscation, execution loaders. | `J0W-CODE-*` |
@@ -61,13 +61,13 @@ be re-rendered from a persisted scan without re-touching the tree.
 Plus:
 
 - **Scan-to-scan drift** (`j0witness diff`): compares two persisted scans of the
-  same site â the monitoring / incident-response question, *"what changed since the
+  same site — the monitoring / incident-response question, *"what changed since the
   last known-good scan?"*
 - **Baseline verification at scan time**: the embedded catalog is the single root
   of trust; the stored baseline and cached official package are re-verified against
   it before the diff trusts them, and the scan hard-refuses (`BASELINE_UNTRUSTED`)
   on tampering.
-- **Four report projections** from one canonical JSON: `json` Â· `text` Â· `pdf` Â·
+- **Four report projections** from one canonical JSON: `json` · `text` · `pdf` ·
   `sarif` (for CI / code-scanning integration).
 - **Bilingual reports**: `--language en|es`.
 - **False-positive suppression**: a declarative exclusions file where the reason is
@@ -91,7 +91,7 @@ j0witness scan /var/www/mysite --format pdf > report.pdf
 # 3. Correlate with the database (offline; the dump is parsed, never executed):
 j0witness scan /var/www/mysite --db dump.sql --format text
 
-# 4. Monitoring / IR â what changed since the last scan:
+# 4. Monitoring / IR — what changed since the last scan:
 j0witness runs /var/www/mysite          # list persisted scans
 j0witness diff /var/www/mysite          # drift between the two most recent
 
@@ -103,10 +103,10 @@ Build instructions: **[docs/BUILD.md](docs/BUILD.md)**.
 
 ## Exit codes (stable contract)
 
-`0` clean Â· `1` findings â¥ medium Â· `2` usage error Â· `3` preflight failed Â·
-`4` baseline unavailable Â· `5` multiple installations Â· `6/7` version unsupported /
-inconclusive Â· `8` baseline untrusted (stored baseline does not match the embedded
-catalog) Â· `10` internal error.
+`0` clean · `1` findings >= medium · `2` usage error · `3` preflight failed ·
+`4` baseline unavailable · `5` multiple installations · `6/7` version unsupported /
+inconclusive · `8` baseline untrusted (stored baseline does not match the embedded
+catalog) · `10` internal error.
 
 ## Scope and honest limitations
 
@@ -114,7 +114,7 @@ J0Witness is deliberately narrow, and it is more useful when you know exactly wh
 it can and cannot answer.
 
 **The question it answers well:** *"Does the on-disk tree match the known-good
-vendor distribution plus the declared third-party extensions â and if not, where,
+vendor distribution plus the declared third-party extensions — and if not, where,
 and with what evidence?"*
 
 **What it detects:** added / modified / deleted core files; webshell and obfuscation
@@ -123,12 +123,12 @@ legitimately-installed extension; dangerous server-config directives; structural
 timestomping (`mtime > ctime`); database-state anomalies when you provide a dump;
 and drift between two scans of the same site.
 
-**What it does *not* do â read this before relying on it:**
+**What it does *not* do — read this before relying on it:**
 
 - **It does not repair, clean, quarantine, or restore.** It observes and testifies.
 - **Absence of findings is not proof of a clean site.** It is evidence about the
   disk, bounded by the layers below.
-- **It is blind to compromise that lives only outside the filesystem** â purely
+- **It is blind to compromise that lives only outside the filesystem** — purely
   in-database persistence (unless you supply a `mysqldump`), in-memory/runtime
   implants, or malicious state in external services. There is no live process,
   network, or memory inspection.
@@ -143,7 +143,7 @@ and drift between two scans of the same site.
   are attributed and contextualized, not deeply verified beyond an extension's
   official-package hash when it is cached. A supply-chain compromise *upstream* of
   the baseline you feed it is outside its reach (baseline integrity is now verified
-  against the embedded catalog at scan time â see L7 / `BASELINE_UNTRUSTED`).
+  against the embedded catalog at scan time — see L7 / `BASELINE_UNTRUSTED`).
 - **The temporal layer trusts ctime under a declared threat model** (an attacker
   with www-data privileges, no root). A root-level attacker who can rewrite ctime
   defeats it; backdating (`mtime << ctime`) is explicitly a non-goal because it is
@@ -155,12 +155,33 @@ and drift between two scans of the same site.
 privileges (`www-data`) and no root. Under that model ctime is the reliable
 temporal anchor. This assumption is stated so the reader can judge where it holds.
 
+## State and storage
+
+J0Witness persists to an **embedded SQLite database** (pure-Go
+`modernc.org/sqlite` — no CGO, no system library; the engine is compiled into the
+binary). There is nothing to enable: every scan writes to it automatically.
+
+The database files live in the **work directory** (`--workdir`, default
+`~/.local/state/j0witness/`) — never inside the repository or the analyzed tree:
+
+- `state.sqlite` — the baseline registry (what you ingest with `baseline add` /
+  `baseline fetch`). Shared across targets.
+- `inv-<hash>.sqlite` — **one per scanned target** (keyed by a hash of the target
+  path). Each scan of that target appends a *run* to the `runs` / `entries` /
+  `observations` tables. This is the event substrate that lets `report` re-render
+  and `diff` compare **without re-touching the tree**.
+
+Control the location with `--workdir`; list a target's persisted runs with
+`j0witness runs <target>`. These files grow with inventory size and accumulate
+across runs — deleting an `inv-*.sqlite` discards that target's scan history (the
+next scan recreates it); it is never written inside the site you analyze.
+
 ## Documentation
 
-- **[Architecture](docs/ARCHITECTURE.md)** ([EspaÃ±ol](docs/ARQUITECTURA.md)) â layers, data flow, trust model, diagrams.
-- **[Build](docs/BUILD.md)** â compiling the single static binary and the reproducibility gate.
-- **[Roadmap](docs/ROADMAP.md)** â planned and possible future work.
-- **[Source](src/)** â the full Go source tree.
+- **[Architecture](docs/ARCHITECTURE.md)** ([Español](docs/ARQUITECTURA.md)) — layers, data flow, trust model, diagrams.
+- **[Build](docs/BUILD.md)** — compiling the single static binary and the reproducibility gate.
+- **[Roadmap](docs/ROADMAP.md)** — planned and possible future work.
+- **[Source](src/)** — the full Go source tree.
 
 ## License
 
