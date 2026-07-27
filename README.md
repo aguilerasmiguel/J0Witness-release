@@ -26,8 +26,7 @@ for a human to decide whether a compromise occurred.
 
 ## Why it exists
 
-Most "is my site hacked?" tooling either needs the site running, phones home, or
-mutates the very evidence it is inspecting. J0Witness is built the opposite way:
+J0Witness is built with the following principles: 
 
 - **Offline and self-contained.** A single static binary. No PHP runtime, no
   database, no network by default. Copy it to the host and run it.
