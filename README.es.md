@@ -27,9 +27,7 @@ suficientes para que un humano decida si hubo compromiso.
 
 ## Por qué existe
 
-La mayoría de las herramientas de "¿me hackearon el sitio?" o necesitan el sitio
-corriendo, o llaman a casa, o mutan la propia evidencia que inspeccionan.
-J0Witness se construye al revés:
+J0Witness se construye tomando en cuenta:
 
 - **Offline y autocontenido.** Un solo binario estático. Sin runtime de PHP, sin
   base de datos, sin red por defecto. Se copia al host y se ejecuta.
