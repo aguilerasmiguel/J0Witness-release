@@ -1,0 +1,17 @@
+# CONFIG-001: un .htaccess plantado (no en la distribución) redirige la
+# ejecución de PHP vía auto_prepend_file hacia un payload fuera del docroot →
+# J0W-CONFIG-001 critical (internal/confscan, feature 002).
+case: config-exec-loader
+base:
+  cms: joomla
+  version: "1.1.0"
+expect:
+  exit_code: 1
+  findings:
+    - rule_id: J0W-CONFIG-001
+      subject: images/.htaccess
+      min_severity: critical
+mutations:
+  - op: add_file
+    path: images/.htaccess
+    content: "php_value auto_prepend_file /var/www/html/images/logo.php\n"

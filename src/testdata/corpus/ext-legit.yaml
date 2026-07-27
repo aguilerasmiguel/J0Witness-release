@@ -1,0 +1,14 @@
+# Negativo (SC-100): extensión de terceros legítima → sus archivos atribuidos,
+# cero hallazgos >= medium por ellos.
+case: ext-legit
+base:
+  cms: joomla
+  version: "1.1.0"
+expect:
+  exit_code: 0
+  findings: []
+  not_findings:
+    - rule_id: J0W-CORE-004
+    - rule_id: J0W-EXT-001
+mutations:
+  - op: add_extension

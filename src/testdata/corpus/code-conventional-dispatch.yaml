@@ -1,0 +1,20 @@
+# Negativo real (Principio VI): concatenar una propiedad de tiempo de
+# ejecución con un sufijo literal ($this->component . 'BuildRoute') es
+# despacho convencional habitual (RouterLegacy::build de Joomla), no
+# ofuscación del nombre de la función — a diferencia de concatenar solo
+# literales ('sys'.'tem'), que sí es la técnica de evasión clásica.
+case: code-conventional-dispatch
+base:
+  cms: joomla
+  version: "1.1.0"
+expect:
+  exit_code: 0
+  not_findings:
+    - rule_id: J0W-CODE-001
+    - rule_id: J0W-CODE-002
+    - rule_id: J0W-CODE-004
+mutations:
+  - op: add_extension
+  - op: add_file
+    path: components/com_labext/src/dispatch.php
+    content: "<?php $function = $this->component . 'BuildRoute'; if (function_exists($function)) { $segments = $function($query); } "

@@ -1,0 +1,18 @@
+# D5b: archivo del core ausente que no cae en ninguna clase reconocida
+# (no ejecutable, no dist-default esperado, no asset inerte: un .ini de
+# idioma) → política conservadora, se queda en medium (base, sin degradar).
+# Contraste con core-missing-inert.yaml (low) y core-missing-expected.yaml
+# (info): un desconocido no se degrada nunca.
+case: core-missing-unknown
+base:
+  cms: joomla
+  version: "1.1.0"
+expect:
+  exit_code: 1
+  findings:
+    - rule_id: J0W-CORE-003
+      subject: language/en-GB/en-GB.ini
+      min_severity: medium
+mutations:
+  - op: delete_file
+    path: language/en-GB/en-GB.ini

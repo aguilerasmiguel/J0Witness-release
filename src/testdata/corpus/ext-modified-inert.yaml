@@ -1,0 +1,23 @@
+# Negativo de severidad (fase 2a, Task 6): archivo NO ejecutable de com_labext
+# (media/js, .js) con contenido distinto al del paquete oficial → J0W-EXT-008
+# low (D5: divergencia en archivo inerte es integridad de contenido, no de
+# ejecución) — no eleva el exit code.
+case: ext-modified-inert
+base:
+  cms: joomla
+  version: "1.1.0"
+expect:
+  exit_code: 0
+  findings:
+    - rule_id: J0W-EXT-008
+      subject: media/com_labext/js/app.js
+      min_severity: low
+      max_severity: low
+  not_findings:
+    - rule_id: J0W-EXT-009
+mutations:
+  - op: add_extension
+  - op: add_extension_baseline
+  - op: replace_file
+    path: media/com_labext/js/app.js
+    content: "// contenido distinto al del paquete oficial\nconsole.log('modificado');\n"

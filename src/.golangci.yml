@@ -1,0 +1,46 @@
+run:
+  timeout: 5m
+
+linters:
+  enable:
+    - govet
+    - staticcheck
+    - errcheck
+    - ineffassign
+    - unused
+    - misspell
+    - forbidigo
+
+linters-settings:
+  forbidigo:
+    # Guardia del Principio I: fuera de los paquetes exentos (inventory,
+    # baseline, corpus/lab y tools) nadie abre archivos en escritura ni crea
+    # archivos. El acceso al árbol objetivo pasa exclusivamente por
+    # internal/safefs, que solo expone lectura.
+    forbid:
+      - p: 'os\.OpenFile'
+        msg: "apertura con flags arbitrarias prohibida (Principio I); usa internal/safefs para el objetivo o los paquetes exentos para estado propio"
+      - p: 'os\.Create'
+        msg: "creación de archivos prohibida fuera de los paquetes exentos (Principio I)"
+      - p: 'os\.WriteFile'
+        msg: "escritura de archivos prohibida fuera de los paquetes exentos (Principio I)"
+    exclude-godoc-examples: true
+
+issues:
+  exclude-rules:
+    # Paquetes que legítimamente escriben en el workdir/caché (nunca en el
+    # árbol objetivo) y herramientas de laboratorio.
+    - path: internal/inventory/
+      linters: [forbidigo]
+    - path: internal/baseline/
+      linters: [forbidigo]
+    - path: internal/lab/
+      linters: [forbidigo]
+    - path: internal/corpus/
+      linters: [forbidigo]
+    - path: internal/cli/
+      linters: [forbidigo]
+    - path: tools/
+      linters: [forbidigo]
+    - path: _test\.go
+      linters: [forbidigo]

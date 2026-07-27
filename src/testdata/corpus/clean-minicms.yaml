@@ -1,0 +1,15 @@
+# Negativo (SC-001): instalación intacta → cero hallazgos >= medium, exit 0.
+case: clean-minicms
+base:
+  cms: joomla
+  version: "1.1.0"
+expect:
+  exit_code: 0
+  findings: []
+  not_findings:
+    - rule_id: J0W-CORE-001
+    - rule_id: J0W-CORE-002
+    - rule_id: J0W-CORE-003
+    - rule_id: J0W-CORE-004
+    - rule_id: J0W-CORE-005
+mutations: []

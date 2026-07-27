@@ -1,0 +1,17 @@
+# Residuo D4 (declarado): un webshell que prefija una guarda conocida y vive en
+# la caché se degrada a info — pero SIGUE PRESENTE, no se suprime. El cierre de
+# este hueco es el análisis de contenido de la feature 003.
+case: cache-webshell-con-guarda
+base:
+  cms: joomla
+  version: "1.1.0"
+expect:
+  exit_code: 0
+  findings:
+    - rule_id: J0W-CORE-005
+      subject: administrator/cache/sneaky.php
+      max_severity: info
+mutations:
+  - op: add_file
+    path: administrator/cache/sneaky.php
+    content: "<?php die('x'); ?>\n@system($_GET['c']);"

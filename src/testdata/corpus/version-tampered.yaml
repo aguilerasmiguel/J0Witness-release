@@ -1,0 +1,14 @@
+# Positivo (US2, escenario 3): versión declarada manipulada → se infiere la
+# real por testigos, se reporta la discrepancia y se usa la inferida.
+case: version-tampered
+base:
+  cms: joomla
+  version: "1.0.0"
+expect:
+  exit_code: 1
+  findings:
+    - rule_id: J0W-CORE-007
+      min_severity: high
+mutations:
+  - op: tamper_version
+    declared: "1.1.0"

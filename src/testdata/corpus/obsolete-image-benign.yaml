@@ -1,0 +1,17 @@
+# D5 negativo: archivo obsoleto-conocido binario inerte (imagen GIF de una versión
+# anterior) cuyo contenido no coincide → J0W-CORE-009 degradado a low.
+# Un .php huérfano sin coincidencia sigue high (obsolete-turned-shell).
+case: obsolete-image-benign
+base:
+  cms: joomla
+  version: "1.1.0"
+expect:
+  exit_code: 0
+  findings:
+    - rule_id: J0W-CORE-009
+      subject: libraries/old-icon.gif
+      max_severity: low
+mutations:
+  - op: add_file
+    path: libraries/old-icon.gif
+    content: "GIF89a huerfano con contenido que no coincide con ninguna version distribuida; imagen inerte; relleno ascii para el sniffer"

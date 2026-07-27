@@ -1,0 +1,26 @@
+# Fase 2d (Task 6): contraparte CON bandera de layout-renamed-autoremap.yaml
+# — mismo árbol (adm1ng/ vía rename_dir), pero forzado con
+# --administrator-dir=adm1ng en vez de depender de la auto-detección. Debe
+# verificar igual de limpio (mismas ausencias); la única diferencia
+# observable es coverage.layout.remap_source: "operator" en vez de
+# "auto-detected" (ver TestLayoutRenamedFlagOperatorSource en
+# internal/cli/layout_corpus_test.go).
+case: layout-renamed-flag
+base:
+  cms: joomla
+  version: "1.1.0"
+scan_args: ["--administrator-dir", "adm1ng"]
+expect:
+  exit_code: 0
+  findings: []
+  not_findings:
+    - rule_id: J0W-CORE-001
+    - rule_id: J0W-CORE-002
+    - rule_id: J0W-CORE-003
+    - rule_id: J0W-CORE-004
+    - rule_id: J0W-CORE-005
+    - rule_id: J0W-LAYOUT-001
+mutations:
+  - op: rename_dir
+    path: administrator
+    target: adm1ng

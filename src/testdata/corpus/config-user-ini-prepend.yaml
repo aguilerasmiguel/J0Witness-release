@@ -1,0 +1,17 @@
+# CONFIG-001 vía .user.ini: el mismo patrón exec_loader, pero en el formato
+# ini (PHP-FPM/FastCGI no lee .htaccess) bajo administrator/ → J0W-CONFIG-001
+# critical.
+case: config-user-ini-prepend
+base:
+  cms: joomla
+  version: "1.1.0"
+expect:
+  exit_code: 1
+  findings:
+    - rule_id: J0W-CONFIG-001
+      subject: administrator/.user.ini
+      min_severity: critical
+mutations:
+  - op: add_file
+    path: administrator/.user.ini
+    content: "auto_prepend_file = /tmp/x.php\n"

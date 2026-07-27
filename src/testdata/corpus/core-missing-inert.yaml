@@ -1,0 +1,18 @@
+# D5b: archivo del core ausente cuya clase es "inert_asset" (bajo media/,
+# aunque su extensión sea .css): un asset estático ausente no es señal de
+# manipulación (patrón de copia/backup que excluye media/vendored) →
+# J0W-CORE-003 degradado a low, sin forzar exit 1. Contraste con
+# core-missing-file.yaml (App.php, ejecutable → medium).
+case: core-missing-inert
+base:
+  cms: joomla
+  version: "1.1.0"
+expect:
+  exit_code: 0
+  findings:
+    - rule_id: J0W-CORE-003
+      subject: media/css/app.css
+      max_severity: low
+mutations:
+  - op: delete_file
+    path: media/css/app.css

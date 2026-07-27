@@ -1,0 +1,18 @@
+# D5b: archivo del core ausente cuya clase es "expected_absent" — uno de los
+# dist-defaults que Joomla distribuye y que los sitios configurados borran o
+# renombran de rutina (LICENSE.txt/README.txt/htaccess.txt/web.config.txt/
+# robots.txt.dist), o un residuo bajo un directorio de runtime (cache/logs/
+# tmp) → J0W-CORE-003 degradado a info, sin forzar exit 1.
+case: core-missing-expected
+base:
+  cms: joomla
+  version: "1.1.0"
+expect:
+  exit_code: 0
+  findings:
+    - rule_id: J0W-CORE-003
+      subject: htaccess.txt
+      max_severity: info
+mutations:
+  - op: delete_file
+    path: htaccess.txt

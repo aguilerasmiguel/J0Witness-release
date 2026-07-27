@@ -1,0 +1,20 @@
+# NEGATIVO (anti-FP): un .htaccess de reescritura SEF típico de Joomla
+# (RewriteEngine/RewriteCond/RewriteRule) no contiene ninguna directiva
+# quirúrgica de confscan (exec_loader/handler_widen/php_setting) → cero
+# J0W-CONFIG-*. Complementa TestDefaultJoomlaHtaccessIsClean (Task 1) y la
+# validación 0-J0W-CONFIG sobre el sitio real (Task 3, Step 5).
+case: config-htaccess-benigno
+base:
+  cms: joomla
+  version: "1.1.0"
+expect:
+  exit_code: 0
+  not_findings:
+    - rule_id: J0W-CONFIG-001
+      subject: .htaccess
+    - rule_id: J0W-CONFIG-002
+      subject: .htaccess
+mutations:
+  - op: add_file
+    path: .htaccess
+    content: "# Joomla SEF\nRewriteEngine On\nRewriteCond %{REQUEST_FILENAME} !-f\nRewriteRule .* index.php [L]\n"

@@ -1,0 +1,20 @@
+# Negativo real (Principio VI): assert() sobre una comparación sobre un valor
+# decodificado (p.ej. `assert($bin !== false)`, como en brick/math
+# BigInteger::toBytes) es una comprobación booleana benigna del resultado del
+# decode, no una ejecución de la cadena decodificada — a diferencia del uso
+# desnudo `assert($f)` tras `$f = decode(...)`, que sigue disparando.
+case: code-assert-boolean-check
+base:
+  cms: joomla
+  version: "1.1.0"
+expect:
+  exit_code: 0
+  not_findings:
+    - rule_id: J0W-CODE-001
+    - rule_id: J0W-CODE-002
+    - rule_id: J0W-CODE-004
+mutations:
+  - op: add_extension
+  - op: add_file
+    path: components/com_labext/src/assertcheck.php
+    content: "<?php $bin = hex2bin($hex); assert($bin !== false); "

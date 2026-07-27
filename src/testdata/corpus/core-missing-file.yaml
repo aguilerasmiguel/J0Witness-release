@@ -1,0 +1,18 @@
+# Positivo: archivo EJECUTABLE del core ausente (D5b: la severidad de
+# J0W-CORE-003 ahora se calibra por clase — ver core-missing-inert.yaml,
+# core-missing-expected.yaml y core-missing-unknown.yaml para las otras
+# clases). Un .php ausente es la clase "executable": código removido es
+# señal, no se degrada; se queda medium (base_severity conservador).
+case: core-missing-file
+base:
+  cms: joomla
+  version: "1.1.0"
+expect:
+  exit_code: 1
+  findings:
+    - rule_id: J0W-CORE-003
+      subject: libraries/src/App.php
+      min_severity: medium
+mutations:
+  - op: delete_file
+    path: libraries/src/App.php

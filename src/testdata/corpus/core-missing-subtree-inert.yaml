@@ -1,0 +1,40 @@
+# D5c: subárbol del baseline AUSENTE POR COMPLETO cuya clase agregada es
+# "inert_asset" (8 archivos .js/.css bajo media/vendor/lib/, todos ausentes:
+# ningún archivo hermano sobrevive). CollapseMissingSubtrees agrupa las 8
+# ausencias individuales en UN solo J0W-CORE-003 con subject: media/vendor/lib
+# (el directorio, no cada archivo) y severidad degradada a low (clase
+# inert_asset, igual que core-missing-inert.yaml para el caso individual).
+#
+# not_findings ancla que el colapso REEMPLAZA a los individuales: ninguno de
+# los 8 archivos borrados aparece como J0W-CORE-003 por separado (si el
+# colapso fallara, reaparecerían 8 hallazgos individuales con esos subjects).
+case: core-missing-subtree-inert
+base:
+  cms: joomla
+  version: "1.1.0"
+expect:
+  exit_code: 0
+  findings:
+    - rule_id: J0W-CORE-003
+      subject: media/vendor/lib
+      max_severity: low
+  not_findings:
+    - rule_id: J0W-CORE-003
+      subject: media/vendor/lib/core.js
+    - rule_id: J0W-CORE-003
+      subject: media/vendor/lib/core.min.js
+    - rule_id: J0W-CORE-003
+      subject: media/vendor/lib/plugin.js
+    - rule_id: J0W-CORE-003
+      subject: media/vendor/lib/util.js
+    - rule_id: J0W-CORE-003
+      subject: media/vendor/lib/theme.css
+    - rule_id: J0W-CORE-003
+      subject: media/vendor/lib/theme.min.css
+    - rule_id: J0W-CORE-003
+      subject: media/vendor/lib/reset.css
+    - rule_id: J0W-CORE-003
+      subject: media/vendor/lib/print.css
+mutations:
+  - op: delete_dir
+    path: media/vendor/lib

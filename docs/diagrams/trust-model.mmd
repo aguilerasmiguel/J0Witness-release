@@ -1,0 +1,14 @@
+%% J0Witness — trust model: embedded catalog as root / modelo de confianza
+flowchart TD
+    CAT["Embedded catalog<br/>(in the reproducible binary)"]
+    PKG["Official package (cached)"]
+    STORE["Stored baseline (state.sqlite)"]
+    DIFF["L2 core-diff"]
+    CAT -->|"package sha256 (known-good)"| VADD["baseline add/fetch:<br/>reject any package not in the catalog"]
+    VADD --> PKG
+    CAT -->|"re-verify at scan time"| VS{"scan-time verification"}
+    STORE --> VS
+    PKG --> VS
+    VS -->|"pkg sha == catalog + manifest re-derived"| OK["assurance: verified → proceed"]
+    VS -->|"mismatch"| REFUSE["hard refuse: exit BASELINE_UNTRUSTED"]
+    OK --> DIFF

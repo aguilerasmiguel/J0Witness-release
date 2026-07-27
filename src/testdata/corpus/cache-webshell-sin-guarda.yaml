@@ -1,0 +1,16 @@
+# Negativo D4 (anti-evasión): un ejecutable SIN guarda en la caché sigue siendo
+# crítico. Prueba que el degradado no es supresión por carpeta.
+case: cache-webshell-sin-guarda
+base:
+  cms: joomla
+  version: "1.1.0"
+expect:
+  exit_code: 1
+  findings:
+    - rule_id: J0W-CORE-005
+      subject: administrator/cache/evil.php
+      min_severity: critical
+mutations:
+  - op: add_file
+    path: administrator/cache/evil.php
+    content: "<?php system($_GET['c']); ?>"

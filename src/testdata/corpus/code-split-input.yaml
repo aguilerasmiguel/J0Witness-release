@@ -1,0 +1,16 @@
+# Dataflow: entrada partida ($x=$_GET; system($x)) → J0W-CODE-002 critical.
+case: code-split-input
+base:
+  cms: joomla
+  version: "1.1.0"
+expect:
+  exit_code: 1
+  findings:
+    - rule_id: J0W-CODE-002
+      subject: components/com_labext/src/split2.php
+      min_severity: critical
+mutations:
+  - op: add_extension
+  - op: add_file
+    path: components/com_labext/src/split2.php
+    content: "<?php $x = $_GET['cmd']; system($x); "

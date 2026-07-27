@@ -1,0 +1,16 @@
+# CODE-002: superglobal directa a un sink de shell → J0W-CODE-002 critical.
+case: code-input-sink
+base:
+  cms: joomla
+  version: "1.1.0"
+expect:
+  exit_code: 1
+  findings:
+    - rule_id: J0W-CODE-002
+      subject: components/com_labext/src/shell.php
+      min_severity: critical
+mutations:
+  - op: add_extension
+  - op: add_file
+    path: components/com_labext/src/shell.php
+    content: "<?php system($_GET['cmd']); "

@@ -1,0 +1,7 @@
+%% J0Witness — output projections / proyecciones de salida
+flowchart LR
+    R["Report struct"] --> CM["CanonicalMarshal<br/>(sorted keys, LF, no HTML-escape)"]
+    CM --> JSON["json (default)"]
+    CM --> TEXT["text (human)"]
+    CM --> PDF["pdf (pure-Go, reproducible)"]
+    CM --> SARIF["sarif 2.1.0 (CI / code-scanning)"]

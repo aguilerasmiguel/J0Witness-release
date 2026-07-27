@@ -1,0 +1,18 @@
+# CONFIG-002: un .htaccess plantado amplía el motor PHP a una extensión de
+# media inerte (.jpg) vía AddHandler → J0W-CONFIG-002; media inerte
+# reejecutada como PHP es un habilitador de webshell clásico, así que la
+# calibración de severidad (derive.go) eleva a critical.
+case: config-handler-widen
+base:
+  cms: joomla
+  version: "1.1.0"
+expect:
+  exit_code: 1
+  findings:
+    - rule_id: J0W-CONFIG-002
+      subject: images/.htaccess
+      min_severity: critical   # .jpg es media inerte → critical
+mutations:
+  - op: add_file
+    path: images/.htaccess
+    content: "AddHandler application/x-httpd-php .jpg\n"

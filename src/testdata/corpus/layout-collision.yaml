@@ -1,0 +1,29 @@
+# Fase 2d (Task 6): árbol renombrado (adm1ng/, vía rename_dir) MÁS un
+# administrator/ literal señuelo (sin el esqueleto — un solo archivo, no
+# components/manifests/includes) reintroducido después del rename. Prueba el
+# fallo-ruidoso de layout.Resolve (internal/layout/config.go): DetectAdmin no
+# encuentra esqueleto en administrator/ (Standard=false), sí lo encuentra en
+# adm1ng/ (AdminDirFound="adm1ng"), pero como AdminDir != "administrator" Y
+# YA existe un administrator/ real en el árbol, Resolve rechaza la
+# canonicalización por colisión (no se puede remapear sin ambigüedad) — el
+# scan debe fallar con exit USAGE_ERROR, ANTES de tocar el análisis.
+#
+# El runner de recetas genérico (scanCase + assertExpectations) no cubre este
+# caso: un fallo de resolución no produce informe JSON en stdout, y
+# assertExpectations siempre intenta parsearlo. Por eso esta receta se
+# materializa y escanea con un test de CLI directo,
+# TestLayoutCollisionUsageError en internal/cli/layout_corpus_test.go, que
+# hace su propia llamada a Materialize/h.run en vez de scanCase.
+case: layout-collision
+base:
+  cms: joomla
+  version: "1.1.0"
+expect:
+  exit_code: 2
+mutations:
+  - op: rename_dir
+    path: administrator
+    target: adm1ng
+  - op: add_file
+    path: administrator/decoy.txt
+    content: "no soy el panel de administración\n"

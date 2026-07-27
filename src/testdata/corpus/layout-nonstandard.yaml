@@ -1,0 +1,37 @@
+# Layout no estándar (fase 2c, Task 7): renombra administrator/ → panel/
+# (conserva TODO su contenido: components/, manifests/, includes/ — el mismo
+# esqueleto reconocible, layout.DetectAdmin lo encuentra como candidato). A la
+# vez, instala un plugin ÍNTEGRAMENTE en plugins/ (fuera de
+# administrator/panel: FilesRoot=plugins/system/labplg no depende en absoluto
+# de dónde vive el admin) con su baseline cacheado: DEBE verificar limpio pese
+# al admin renombrado, probando que las extensiones del lado sitio no se ven
+# afectadas por la degradación del lado admin.
+#
+# fase 2d (task 3): el auto-detect de layout.Resolve ahora corre ANTES de
+# adquirir y su Canonicalize remapea panel/* → administrator/* en el
+# inventario, así que corediff ve el esqueleto admin como idéntico al
+# baseline en vez de "ausente" — exit_code pasa de 1 (con J0W-LAYOUT-001 low)
+# a 0 limpio, porque la emisión de la observación de layout (antes
+# layout_nonstandard) se retira en task 3 y task 4 la repone como
+# layout_remap (con su propio rule_id/severidad, probablemente informativo
+# ya que el árbol SÍ se resuelve correctamente). Cuando task 4 emita esa
+# observación, restaurar aquí la expectativa de hallazgo correspondiente
+# (rule_id nuevo, no J0W-LAYOUT-001) y, si esa observación por sí sola no
+# sube el exit code por encima de "medium", dejar exit_code en 0.
+case: layout-nonstandard
+base:
+  cms: joomla
+  version: "1.1.0"
+expect:
+  exit_code: 0
+  not_findings:
+    - rule_id: J0W-EXT-008
+    - rule_id: J0W-EXT-009
+mutations:
+  - op: rename_dir
+    path: administrator
+    target: panel
+  - op: add_extension
+    kind: plugin
+  - op: add_extension_baseline
+    kind: plugin

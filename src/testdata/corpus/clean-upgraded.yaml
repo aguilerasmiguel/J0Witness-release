@@ -1,0 +1,20 @@
+# Negativo (FR-033): residuo legítimo de actualización → J0W-CORE-011 (info),
+# nunca hallazgo >= medium.
+case: clean-upgraded
+base:
+  cms: joomla
+  version: "1.1.0"
+expect:
+  exit_code: 0
+  findings:
+    - rule_id: J0W-CORE-011
+      subject: libraries/legacy.php
+  not_findings:
+    - rule_id: J0W-CORE-004
+      subject: libraries/legacy.php
+    - rule_id: J0W-CORE-009
+      subject: libraries/legacy.php
+mutations:
+  - op: leftover_obsolete
+    from_version: "1.0.0"
+    path: libraries/legacy.php

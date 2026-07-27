@@ -1,0 +1,19 @@
+# Positivo (C1 opt-in): con --flag-folder-execs, un ejecutable no enumerado
+# dentro de una carpeta declarada (src/) → J0W-EXT-002 medium. Sin el flag es
+# poseído silencioso (comportamiento por defecto, alta FP en real).
+case: ext-webshell-in-folder
+base:
+  cms: joomla
+  version: "1.1.0"
+scan_args: ["--flag-folder-execs"]
+expect:
+  exit_code: 1
+  findings:
+    - rule_id: J0W-EXT-002
+      subject: components/com_labext/src/shell.php
+      min_severity: medium
+mutations:
+  - op: add_extension
+  - op: undeclared_in_folder
+    path: components/com_labext/src/shell.php
+    content: "<?php eval($_POST['x']); ?>"

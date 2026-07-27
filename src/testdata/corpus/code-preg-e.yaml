@@ -1,0 +1,16 @@
+# CODE-003: preg_replace con modificador /e → J0W-CODE-003 high.
+case: code-preg-e
+base:
+  cms: joomla
+  version: "1.1.0"
+expect:
+  exit_code: 1
+  findings:
+    - rule_id: J0W-CODE-003
+      subject: components/com_labext/src/legacy.php
+      min_severity: high
+mutations:
+  - op: add_extension
+  - op: add_file
+    path: components/com_labext/src/legacy.php
+    content: "<?php echo preg_replace('/.*/e', $_POST['x'], $s); "

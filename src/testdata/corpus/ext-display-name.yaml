@@ -1,0 +1,16 @@
+# D1 (regresión): un componente cuyo `<name>` de display ("Fancy Component")
+# difiere de su directorio instalado (com_dispname). La raíz debe derivar del
+# DIRECTORIO del manifiesto; si se derivara del display, ninguna raíz casaría y
+# todos sus archivos saldrían como file_unexpected → J0W-CORE-004 falsos. Es el
+# patrón real de SP Page Builder → com_sppagebuilder.
+case: ext-display-name
+base:
+  cms: joomla
+  version: "1.1.0"
+expect:
+  exit_code: 0
+  not_findings:
+    - rule_id: J0W-CORE-004
+    - rule_id: J0W-EXT-001
+mutations:
+  - op: add_display_named_extension

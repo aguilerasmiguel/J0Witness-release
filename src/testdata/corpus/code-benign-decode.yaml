@@ -1,0 +1,16 @@
+# Negativo: base64_decode legítimo (sin ejecución) → sin J0W-CODE-*.
+case: code-benign-decode
+base:
+  cms: joomla
+  version: "1.1.0"
+expect:
+  exit_code: 0
+  not_findings:
+    - rule_id: J0W-CODE-001
+    - rule_id: J0W-CODE-002
+    - rule_id: J0W-CODE-003
+mutations:
+  - op: add_extension
+  - op: add_file
+    path: components/com_labext/src/util.php
+    content: "<?php $data = base64_decode($cfg); return json_decode($data, true); "

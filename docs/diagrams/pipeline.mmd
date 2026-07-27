@@ -1,0 +1,20 @@
+%% J0Witness — analysis pipeline (L0–L7) / pipeline de análisis
+flowchart TD
+    subgraph Acquire["Acquisition / Adquisición"]
+        L0["L0 · acquire<br/>inventory: hash + metadata (read-only)"]
+        L1["L1 · fingerprint<br/>TLSH fuzzy hashing"]
+    end
+    subgraph Analyze["Analysis layers / Capas de análisis"]
+        L2["L2 · core-diff<br/>vs official distribution"]
+        L3["L3 · ext-map<br/>extension attribution by manifest"]
+        L4["L4 · code-scan<br/>static PHP analysis"]
+        L5["L5 · conf-scan<br/>.htaccess / .user.ini / web.config"]
+        L6["L6 · timeline<br/>ctime cohort · timestomping"]
+        L7["L7 · db-scan<br/>mysqldump correlation (--db)"]
+    end
+    OBS[("Observations (SQLite)")]
+    DER["Derivation: observations → findings, by query"]
+    REP["Report (canonical JSON)"]
+    L0 --> L1 --> L2 --> L3 --> L4 --> L5 --> L6 --> L7
+    L2 & L3 & L4 & L5 & L6 & L7 --> OBS
+    OBS --> DER --> REP

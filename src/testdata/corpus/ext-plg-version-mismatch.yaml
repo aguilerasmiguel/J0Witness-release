@@ -1,0 +1,19 @@
+# Negativo (fase 2c, Task 7, Principio VI): el baseline cacheado de
+# plg_system_labplg declara una versión distinta a la instalada (1.4.0) →
+# VerifyExtensions no encuentra correspondencia exacta de versión y NO compara
+# nada: cero J0W-EXT-008/009, aunque el paquete exista y esté cacheado.
+case: ext-plg-version-mismatch
+base:
+  cms: joomla
+  version: "1.1.0"
+expect:
+  exit_code: 0
+  not_findings:
+    - rule_id: J0W-EXT-008
+    - rule_id: J0W-EXT-009
+mutations:
+  - op: add_extension
+    kind: plugin
+  - op: add_extension_baseline
+    kind: plugin
+    version: "9.9.9"

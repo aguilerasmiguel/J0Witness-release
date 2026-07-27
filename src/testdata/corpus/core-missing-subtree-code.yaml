@@ -1,0 +1,40 @@
+# D5c: subárbol del baseline AUSENTE POR COMPLETO cuya clase agregada es
+# "executable" (8 módulos .php bajo vendor/pkg/, todos ausentes). A diferencia
+# de core-missing-subtree-inert.yaml, ClassifyMissing da precedencia al
+# ejecutable sobre cualquier prefijo de directorio, así que la clase agregada
+# (máx severidad entre los miembros) es "executable" y J0W-CORE-003 se queda
+# en medium (base_severity, sin degradar): código completo removido es señal,
+# no patrón de backup — contraste con el subárbol inerte.
+#
+# not_findings ancla el mismo colapso que core-missing-subtree-inert.yaml: los
+# 8 archivos individuales NO aparecen; solo el subject de directorio.
+case: core-missing-subtree-code
+base:
+  cms: joomla
+  version: "1.1.0"
+expect:
+  exit_code: 1
+  findings:
+    - rule_id: J0W-CORE-003
+      subject: vendor/pkg
+      min_severity: medium
+  not_findings:
+    - rule_id: J0W-CORE-003
+      subject: vendor/pkg/Autoload.php
+    - rule_id: J0W-CORE-003
+      subject: vendor/pkg/Cache.php
+    - rule_id: J0W-CORE-003
+      subject: vendor/pkg/Client.php
+    - rule_id: J0W-CORE-003
+      subject: vendor/pkg/Config.php
+    - rule_id: J0W-CORE-003
+      subject: vendor/pkg/Dispatcher.php
+    - rule_id: J0W-CORE-003
+      subject: vendor/pkg/Event.php
+    - rule_id: J0W-CORE-003
+      subject: vendor/pkg/Factory.php
+    - rule_id: J0W-CORE-003
+      subject: vendor/pkg/Registry.php
+mutations:
+  - op: delete_dir
+    path: vendor/pkg

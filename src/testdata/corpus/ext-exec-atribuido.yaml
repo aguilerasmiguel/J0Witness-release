@@ -1,0 +1,14 @@
+# Red unverified_executables: un ejecutable declarado por la extensión y presente
+# aparece en el bloque de divulgación, NO como hallazgo y sin cambiar el exit
+# code. La extensión de laboratorio com_labext declara router.php.
+case: ext-exec-atribuido
+base:
+  cms: joomla
+  version: "1.1.0"
+expect:
+  exit_code: 0
+  not_findings:
+    - rule_id: J0W-EXT-001
+      subject: components/com_labext/router.php
+mutations:
+  - op: add_extension

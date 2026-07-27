@@ -1,0 +1,36 @@
+# D5c: la salvaguarda de Principio VI — un directorio PARCIALMENTE presente
+# NUNCA colapsa, sin importar cuántos archivos falten. Se borran solo 2 de los
+# 8 archivos de media/vendor/lib/ (los 6 restantes siguen presentes en el
+# árbol): CollapseMissingSubtrees exige que el directorio esté AUSENTE POR
+# COMPLETO (ningún archivo presente bajo él) para agrupar; aquí no lo está, así
+# que los 2 ausentes se reportan INDIVIDUALMENTE (como core-missing-inert.yaml)
+# en vez de colapsar en un resumen de directorio. Esto es justo el escenario
+# que la salvaguarda existe para evitar: un borrado DIRIGIDO de 1-2 archivos
+# dentro de un subárbol grande NUNCA puede esconderse detrás del colapso de
+# bloque (el colapso es solo para subárboles enteros ausentes-por-completo,
+# p.ej. exclusión de backup).
+#
+# Contraste directo con core-missing-subtree-inert.yaml (que borra los 8 y SÍ
+# colapsa): not_findings ancla que el subject de directorio colapsado NO
+# aparece aquí.
+case: core-missing-subtree-partial
+base:
+  cms: joomla
+  version: "1.1.0"
+expect:
+  exit_code: 0
+  findings:
+    - rule_id: J0W-CORE-003
+      subject: media/vendor/lib/core.js
+      max_severity: low
+    - rule_id: J0W-CORE-003
+      subject: media/vendor/lib/theme.css
+      max_severity: low
+  not_findings:
+    - rule_id: J0W-CORE-003
+      subject: media/vendor/lib
+mutations:
+  - op: delete_file
+    path: media/vendor/lib/core.js
+  - op: delete_file
+    path: media/vendor/lib/theme.css

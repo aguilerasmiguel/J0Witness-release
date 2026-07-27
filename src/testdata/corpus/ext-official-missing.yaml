@@ -1,0 +1,18 @@
+# Positivo (fase 2a, Task 6): archivo que el paquete oficial de com_labext
+# distribuye pero que falta en el árbol instalado (borrado selectivo o
+# instalación incompleta) → J0W-EXT-009 medium.
+case: ext-official-missing
+base:
+  cms: joomla
+  version: "1.1.0"
+expect:
+  exit_code: 1
+  findings:
+    - rule_id: J0W-EXT-009
+      subject: administrator/components/com_labext/config.xml
+      min_severity: medium
+mutations:
+  - op: add_extension
+  - op: add_extension_baseline
+  - op: delete_file
+    path: administrator/components/com_labext/config.xml

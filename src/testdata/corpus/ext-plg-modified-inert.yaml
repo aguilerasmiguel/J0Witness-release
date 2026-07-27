@@ -1,0 +1,25 @@
+# Negativo de severidad (fase 2c, Task 7): archivo NO ejecutable de
+# plg_system_labplg (tmpl/field.css) con contenido distinto al del paquete
+# oficial → J0W-EXT-008 low (D5: divergencia en archivo inerte es integridad
+# de contenido, no de ejecución) — no eleva el exit code.
+case: ext-plg-modified-inert
+base:
+  cms: joomla
+  version: "1.1.0"
+expect:
+  exit_code: 0
+  findings:
+    - rule_id: J0W-EXT-008
+      subject: plugins/system/labplg/tmpl/field.css
+      min_severity: low
+      max_severity: low
+  not_findings:
+    - rule_id: J0W-EXT-009
+mutations:
+  - op: add_extension
+    kind: plugin
+  - op: add_extension_baseline
+    kind: plugin
+  - op: replace_file
+    path: plugins/system/labplg/tmpl/field.css
+    content: "/* contenido distinto al del paquete oficial */\n.labplg-field { color: red; }\n"

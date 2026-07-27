@@ -1,0 +1,19 @@
+# Negativo (FR-032): CRLF → severidad informativa con hipótesis de subida
+# ASCII; exit 0.
+case: clean-ascii-upload
+base:
+  cms: joomla
+  version: "1.1.0"
+expect:
+  exit_code: 0
+  findings:
+    - rule_id: J0W-CORE-006
+      subject: index.php
+  not_findings:
+    - rule_id: J0W-CORE-001
+      subject: index.php
+    - rule_id: J0W-CORE-002
+      subject: index.php
+mutations:
+  - op: crlf
+    path: index.php

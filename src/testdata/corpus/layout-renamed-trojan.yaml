@@ -1,0 +1,30 @@
+# Fase 2d (Task 6): árbol renombrado (adm1ng/, vía rename_dir) MÁS una
+# inyección en un .php del core admin (adm1ng/components/com_app/app.php,
+# mismo patrón que core-injected-line.yaml sobre index.php) — la prueba de
+# que el remapeo de layout no ciega la detección (Principio XI): el troyano
+# SIGUE cazándose como J0W-CORE-002 crítico pese a vivir bajo el nombre
+# renombrado. El subject esperado es la ruta REAL "adm1ng/components/..."
+# (realizada, no la canónica "administrator/..." interna) — layout.Config.
+# Realize solo se aplica a lo que mira el operador (Principio VII); ver
+# TestLayoutRenamedTrojanCaught en internal/cli/layout_corpus_test.go, que
+# además confirma ausencia de J0W-LAYOUT-001 (el remapeo sigue aplicado).
+case: layout-renamed-trojan
+base:
+  cms: joomla
+  version: "1.1.0"
+expect:
+  exit_code: 1
+  findings:
+    - rule_id: J0W-CORE-002
+      subject: adm1ng/components/com_app/app.php
+      min_severity: critical
+  not_findings:
+    - rule_id: J0W-LAYOUT-001
+mutations:
+  - op: rename_dir
+    path: administrator
+    target: adm1ng
+  - op: inject_line
+    path: adm1ng/components/com_app/app.php
+    after_line: 1
+    content: "eval(base64_decode($_POST['x']));"

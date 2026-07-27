@@ -1,0 +1,19 @@
+# Negativo real (Principio VI): `new $v(...)` instancia una clase de nombre
+# dinámico, no invoca una función — patrón de fábrica (Factory.php,
+# DatabaseFactory.php...) hallado al validar contra el sitio real. No es
+# J0W-CODE-004 (dynamic_call es sobre invocar FUNCIONES, no instanciar clases).
+case: code-new-dynamic-class
+base:
+  cms: joomla
+  version: "1.1.0"
+expect:
+  exit_code: 0
+  not_findings:
+    - rule_id: J0W-CODE-001
+    - rule_id: J0W-CODE-002
+    - rule_id: J0W-CODE-004
+mutations:
+  - op: add_extension
+  - op: add_file
+    path: components/com_labext/src/newclass.php
+    content: "<?php $name = 'JConfig' . $namespace; if (class_exists($name)) { $config = new $name(); } "

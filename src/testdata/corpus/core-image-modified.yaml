@@ -1,0 +1,17 @@
+# D5 negativo: imagen GIF del core modificada (binaria, inerte) → J0W-CORE-001
+# degradado a low (no fuerza exit 1). Un .php modificado sigue high (core-replaced-file).
+# Base y modificado son ambos GIF (magic image/gif) → sin type_mismatch espurio.
+case: core-image-modified
+base:
+  cms: joomla
+  version: "1.1.0"
+expect:
+  exit_code: 0
+  findings:
+    - rule_id: J0W-CORE-001
+      subject: libraries/logo.gif
+      max_severity: low
+mutations:
+  - op: replace_file
+    path: libraries/logo.gif
+    content: "GIF89a contenido GIF distinto para cambiar el hash del binario; sigue siendo una imagen inerte, no un script; relleno ascii"

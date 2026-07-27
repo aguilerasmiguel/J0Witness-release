@@ -1,0 +1,34 @@
+# Fase 2d (Task 6, fix round 1): admin renombrado (adm1ng/, vía rename_dir)
+# CON una extensión de terceros legítima cuyo lado admin
+# (administrator/components/com_labext/…, incluido su manifiesto
+# com_labext.xml) vive dentro del directorio renombrado — el orden de las
+# mutaciones importa: add_extension primero (se instala bajo
+# administrator/components/com_labext/ mientras el árbol aún tiene ese
+# nombre), rename_dir después (se lleva TODO ese subárbol, manifiesto
+# incluido, a adm1ng/components/com_labext/).
+#
+# Antes del fix de extmap.SafeReader (que abría la ruta CANÓNICA del
+# manifiesto contra el árbol REAL), esto producía un falso positivo:
+# ext_manifest_malformed (J0W-EXT-003) sobre una extensión perfectamente
+# legítima, simplemente porque su manifiesto admin-side quedaba
+# inalcanzable bajo el nombre renombrado. Tras el fix, com_labext debe
+# descubrirse con normalidad (aparece en extensions[], type component) y
+# sin J0W-EXT-003 — ver TestLayoutRenamedExtensionAdminDiscovered en
+# internal/cli/layout_corpus_test.go.
+case: layout-renamed-extension-admin
+base:
+  cms: joomla
+  version: "1.1.0"
+expect:
+  exit_code: 0
+  findings: []
+  not_findings:
+    - rule_id: J0W-CORE-004
+    - rule_id: J0W-EXT-001
+    - rule_id: J0W-EXT-003
+    - rule_id: J0W-LAYOUT-001
+mutations:
+  - op: add_extension
+  - op: rename_dir
+    path: administrator
+    target: adm1ng

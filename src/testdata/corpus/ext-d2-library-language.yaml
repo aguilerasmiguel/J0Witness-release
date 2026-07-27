@@ -1,0 +1,21 @@
+# D2 (regresión): tres patrones reales dentro de directorios del core que antes
+# generaban J0W-CORE-004 falsos y ahora quedan atribuidos:
+#   - librería con raíz por <libraryname> (libraries/vendor/synthlib), manifiesto
+#     en subdirectorio de manifests/libraries,
+#   - pack de idioma de terceros que posee todo su directorio (es-XX),
+#   - componente que vuelca una traducción en la carpeta de idioma compartida que
+#     el pack también posee (exacto gana a carpeta → sin J0W-EXT-006).
+# Sin conflictos ni manifiestos sospechosos por las traducciones (J0W-EXT-004).
+case: ext-d2-library-language
+base:
+  cms: joomla
+  version: "1.1.0"
+expect:
+  exit_code: 0
+  not_findings:
+    - rule_id: J0W-CORE-004
+    - rule_id: J0W-EXT-001
+    - rule_id: J0W-EXT-004
+    - rule_id: J0W-EXT-006
+mutations:
+  - op: add_d2_fixtures

@@ -1,0 +1,35 @@
+# Fase 2d (Task 6): admin renombrado a adm1ng/ (op rename_dir, ya existente
+# desde fase 2c/Task 7 para layout-nonstandard.yaml — se reutiliza sin
+# cambios: preserva TODO el subárbol, así que adm1ng/ conserva el esqueleto
+# components/, manifests/, includes/ que layout.DetectAdmin exige). SIN
+# bandera: layout.Resolve debe auto-detectar el candidato único y remapear
+# adm1ng/* -> administrator/* ANTES de adquirir, de modo que corediff vea el
+# árbol admin idéntico al baseline.
+#
+# El corazón de la feature: esto debe verificar TAN limpio como
+# clean-minicms.yaml (mismo árbol base, cero mutaciones de contenido) — cero
+# J0W-CORE-* del lado admin (ni "missing" ni "unexpected": la tormenta que
+# ocurriría si el remapeo no aplicara y corediff viera todo administrator/
+# como ausente y todo adm1ng/ como ajeno) y sin J0W-LAYOUT-001 (el remapeo
+# aplicado retira esa observación de finding, ver derive.go case
+# observe.LayoutRemap). Ver TestLayoutRenamedAutoremapNoStorm en
+# internal/cli/layout_corpus_test.go para la comparación explícita de
+# cardinalidad de hallazgos contra clean-minicms.
+case: layout-renamed-autoremap
+base:
+  cms: joomla
+  version: "1.1.0"
+expect:
+  exit_code: 0
+  findings: []
+  not_findings:
+    - rule_id: J0W-CORE-001
+    - rule_id: J0W-CORE-002
+    - rule_id: J0W-CORE-003
+    - rule_id: J0W-CORE-004
+    - rule_id: J0W-CORE-005
+    - rule_id: J0W-LAYOUT-001
+mutations:
+  - op: rename_dir
+    path: administrator
+    target: adm1ng

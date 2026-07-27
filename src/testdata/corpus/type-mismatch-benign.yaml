@@ -1,0 +1,17 @@
+# D5 negativo: .jpg cuyo contenido es un GIF (imagen mal etiquetada, magic
+# image/gif) → J0W-CORE-010 degradado a info. El .gif que es PHP sigue medium
+# (type-mismatch). images/ no es dir del core → solo CORE-010, sin CORE-004.
+case: type-mismatch-benign
+base:
+  cms: joomla
+  version: "1.1.0"
+expect:
+  exit_code: 0
+  findings:
+    - rule_id: J0W-CORE-010
+      subject: images/foto.jpg
+      max_severity: info
+mutations:
+  - op: add_file
+    path: images/foto.jpg
+    content: "GIF89a este contenido es un gif real bajo extension .jpg, imagen mal etiquetada; relleno ascii suficiente para la deteccion de tipo"

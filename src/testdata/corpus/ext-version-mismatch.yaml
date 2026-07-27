@@ -1,0 +1,17 @@
+# Negativo (fase 2a, Task 6, Principio VI): el baseline cacheado declara una
+# versión distinta a la instalada (2.3.1) → VerifyExtensions no encuentra
+# correspondencia exacta de versión y NO compara nada: cero J0W-EXT-008/009,
+# aunque el paquete exista y esté cacheado.
+case: ext-version-mismatch
+base:
+  cms: joomla
+  version: "1.1.0"
+expect:
+  exit_code: 0
+  not_findings:
+    - rule_id: J0W-EXT-008
+    - rule_id: J0W-EXT-009
+mutations:
+  - op: add_extension
+  - op: add_extension_baseline
+    version: "9.9.9"

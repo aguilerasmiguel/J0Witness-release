@@ -1,0 +1,14 @@
+# Positivo (fase 2a, Task 6): instalación limpia de com_labext + su baseline
+# oficial cacheado (misma versión) → verified:true, cero J0W-EXT-008/009.
+case: ext-verified
+base:
+  cms: joomla
+  version: "1.1.0"
+expect:
+  exit_code: 0
+  not_findings:
+    - rule_id: J0W-EXT-008
+    - rule_id: J0W-EXT-009
+mutations:
+  - op: add_extension
+  - op: add_extension_baseline

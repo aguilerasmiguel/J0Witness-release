@@ -1,0 +1,19 @@
+# Negativo (fase 2c, Task 7, Principio VI): el baseline cacheado de la
+# plantilla labtpl declara una versión distinta a la instalada (3.0.0) → sin
+# correspondencia exacta de versión, no se compara nada: cero
+# J0W-EXT-008/009.
+case: ext-tpl-version-mismatch
+base:
+  cms: joomla
+  version: "1.1.0"
+expect:
+  exit_code: 0
+  not_findings:
+    - rule_id: J0W-EXT-008
+    - rule_id: J0W-EXT-009
+mutations:
+  - op: add_extension
+    kind: template
+  - op: add_extension_baseline
+    kind: template
+    version: "9.9.9"

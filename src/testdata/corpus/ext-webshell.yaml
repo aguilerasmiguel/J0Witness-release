@@ -1,0 +1,20 @@
+# Positivo (SC-102): webshell no declarado fuera de toda ruta declarada de la
+# extensión → J0W-EXT-001 high; el resto de la extensión, sin ruido.
+case: ext-webshell
+base:
+  cms: joomla
+  version: "1.1.0"
+expect:
+  exit_code: 1
+  findings:
+    - rule_id: J0W-EXT-001
+      subject: components/com_labext/evil.php
+      min_severity: high
+  not_findings:
+    - rule_id: J0W-CORE-004
+      subject: components/com_labext/router.php
+mutations:
+  - op: add_extension
+  - op: undeclared_file
+    path: components/com_labext/evil.php
+    content: "<?php system($_GET['c']); ?>"
