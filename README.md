@@ -1,6 +1,7 @@
 # J0Witness
 
 ![Go](https://img.shields.io/badge/Go-1.25%2B-00ADD8?logo=go&logoColor=white)
+![Joomla](https://shields.io)
 ![CGO](https://img.shields.io/badge/CGO-free-2ea44f)
 ![Binary](https://img.shields.io/badge/binary-single%20static-2ea44f)
 ![Network](https://img.shields.io/badge/network-offline%20by%20default-4c9be8)
@@ -10,6 +11,7 @@
 ![Reports](https://img.shields.io/badge/reports-json%20%7C%20text%20%7C%20pdf%20%7C%20sarif-informational)
 ![i18n](https://img.shields.io/badge/i18n-en%20%7C%20es-informational)
 ![License](https://img.shields.io/badge/license-MIT-2ea44f)
+
 
 > **Read this in other languages:** [Español](README.es.md)
 
