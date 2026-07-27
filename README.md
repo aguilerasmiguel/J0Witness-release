@@ -1,7 +1,6 @@
 # J0Witness
 
 ![Go](https://img.shields.io/badge/Go-1.25%2B-00ADD8?logo=go&logoColor=white)
-![Joomla](https://shields.io)
 ![CGO](https://img.shields.io/badge/CGO-free-2ea44f)
 ![Binary](https://img.shields.io/badge/binary-single%20static-2ea44f)
 ![Network](https://img.shields.io/badge/network-offline%20by%20default-4c9be8)
