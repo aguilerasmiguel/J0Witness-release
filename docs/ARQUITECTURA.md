@@ -101,6 +101,24 @@ Consecuencias:
   (p.ej. un outlier de ctime) anotan un hallazgo existente pero jamás crean uno ni
   elevan su severidad (Principio 4).
 
+### Dónde vive el estado
+
+La persistencia es una **base de datos SQLite embebida** — el driver Go puro
+`modernc.org/sqlite`, compilado dentro del binario (sin CGO, sin librería del
+sistema; Principio 6). No se activa ni configura nada: cada `scan` escribe en ella.
+
+Los archivos viven en el **directorio de trabajo** (`--workdir`, por defecto
+`~/.local/state/j0witness/`), jamás dentro del repositorio ni del árbol analizado
+(la evidencia sigue inmutable, Principio 1):
+
+- `state.sqlite` — el registro de baselines (de `baseline add`/`fetch`), compartido
+  entre objetivos.
+- `inv-<hash>.sqlite` — un store por objetivo escaneado, con clave = hash de la
+  ruta del objetivo. Los escaneos repetidos del mismo objetivo se acumulan como
+  *runs* sucesivos (`runs` / `entries` / `observations`). Como los hallazgos no se
+  persisten (solo las observaciones), `report` y `diff` recargan un run y
+  re-derivan — jamás vuelven a tocar el árbol.
+
 ## 4. Modelo de confianza — el catálogo embebido como raíz
 
 El valor forense de toda comparación de core depende de que el baseline sea

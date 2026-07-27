@@ -95,6 +95,24 @@ Consequences:
   ctime outlier) annotate an existing finding but can never create one or raise its
   severity (Principle 4).
 
+### Where the state lives
+
+Persistence is an **embedded SQLite database** — the pure-Go `modernc.org/sqlite`
+driver, compiled into the binary (no CGO, no system library; Principle 6). Nothing
+is enabled or configured: every scan writes to it.
+
+The files live in the **work directory** (`--workdir`, default
+`~/.local/state/j0witness/`), never inside the repository or the analyzed tree
+(evidence stays immutable, Principle 1):
+
+- `state.sqlite` — the baseline registry (from `baseline add`/`fetch`), shared
+  across targets.
+- `inv-<hash>.sqlite` — one store per scanned target, keyed by a hash of the
+  target path. Repeated scans of the same target accumulate as successive *runs*
+  (`runs` / `entries` / `observations`). Because findings are not persisted (only
+  observations are), `report` and `diff` reload a run and re-derive — they never
+  re-touch the tree.
+
 ## 4. Trust model — the embedded catalog as root
 
 The forensic value of every core comparison depends on the baseline being genuine.
