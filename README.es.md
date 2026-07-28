@@ -25,6 +25,30 @@ suficientes para que un humano decida si hubo compromiso.
 
 ---
 
+## ¿Para quién es?
+
+J0Witness está pensado para quien *recibe* un sitio Joomla y tiene que emitir un
+documento sobre él — no principalmente para el dueño que escanea su propia máquina:
+
+- **Consultores de respuesta a incidentes (IR)** a los que entregan un sitio que
+  tumbaron "por precaución": ahora tienen un tarball y un dump de la base de datos,
+  y deben emitir un informe que leerá un cliente (o un procedimiento).
+- **Proveedores de hosting y MSP** que gestionan muchas instalaciones Joomla y
+  necesitan un veredicto por sitio, repetible y offline, sin entrar en vivo en cada
+  uno.
+- **Agencias que heredan sitios de terceros** y deben auditar qué están asumiendo
+  antes de cargar con la responsabilidad.
+
+Lo que comparten: necesitan un **entregable defendible**. Por eso el build
+reproducible, la salida determinista y el **informe PDF** no son adorno — son el
+producto. Poder entregar un informe y decir *"reejecuta esto y te sale byte por byte
+lo mismo"* tiene peso en un procedimiento. Y como el análisis es **offline**,
+funciona justo en el escenario donde los escáneres en vivo (Wordfence, Sucuri y
+compañía) no pueden: el sitio ya está caído y lo único que tienes son los archivos y
+el dump.
+
+---
+
 ## Por qué existe
 
 J0Witness se construye tomando en cuenta:
@@ -38,7 +62,13 @@ J0Witness se construye tomando en cuenta:
   produce salida byte-idéntica, y el binario es un build reproducible — ambas
   propiedades importan cuando el informe se usa como evidencia.
 - **Un falso positivo es un defecto severo.** El motor degrada hacia el silencio en
-  vez de gritar; cada hallazgo pretende ser accionable.
+  vez de gritar; cada hallazgo pretende ser accionable. Es el defecto correcto para
+  CI y monitorización, donde el ruido mata la adopción. En respuesta a incidentes a
+  mano la asimetría se invierte —un backdoor que no reportas cuesta mucho más que
+  unos archivos que el analista descarta— así que un *modo de sensibilidad / IR*
+  planificado (ver el [roadmap](docs/ROADMAP.md)) sacará las observaciones por
+  debajo del umbral para que un humano las triage, sin cambiar el default
+  conservador.
 
 ## Qué hace
 
@@ -69,10 +99,29 @@ Además:
   re-verifican contra él antes de que el diff confíe, y el scan rechaza en duro
   (`BASELINE_UNTRUSTED`) ante manipulación.
 - **Cuatro proyecciones de informe** desde un único JSON canónico: `json` · `text`
-  · `pdf` · `sarif` (integración con CI / code-scanning).
+  · `pdf` · `sarif`. El `pdf` es el **entregable de cara al cliente** — el documento
+  que un consultor de IR o un MSP entrega; el `sarif` alimenta CI / code-scanning; y
+  el `json` es la fuente canónica de máquina de la que toda otra proyección se
+  deriva, de forma pura y determinista.
 - **Informes bilingües**: `--language es|en`.
 - **Supresión de falsos positivos**: un archivo de exclusiones declarativo donde el
   motivo es obligatorio y cada supresión se refleja en el propio informe.
+
+## Descarga
+
+Hay **binarios estáticos** precompilados (Linux `amd64` / `arm64`) adjuntos a cada
+[Release de GitHub](https://github.com/aguilerasmiguel/J0Witness-release/releases),
+junto a un `SHA256SUMS.txt`. Sin dependencias — verifica, marca ejecutable y corre:
+
+```sh
+sha256sum -c SHA256SUMS.txt
+chmod +x j0witness-linux-amd64
+./j0witness-linux-amd64 --help
+```
+
+El build es **reproducible**: desde un checkout en el tag del release,
+`make -C src build-all VERSION=<tag>` produce exactamente los mismos binarios (mismo
+SHA256). Para compilar desde el código tú mismo, ver **[docs/BUILD.md](docs/BUILD.md)**.
 
 ## Uso rápido
 
@@ -143,10 +192,16 @@ BD cuando aportas un dump; y deriva entre dos escaneos del mismo sitio.
 - **Su verdad de referencia es la distribución oficial y el catálogo embebido.** Lo
   que el fabricante no distribuye (internos de extensiones de terceros, subidas,
   contenido de usuario) se atribuye y contextualiza, no se verifica en profundidad
-  más allá del hash del paquete oficial de una extensión cuando está cacheado. Un
-  compromiso de cadena de suministro *aguas arriba* del baseline que le das queda
-  fuera de su alcance (la integridad del baseline se verifica ahora contra el
-  catálogo embebido en tiempo de scan — ver L7 / `BASELINE_UNTRUSTED`).
+  más allá del hash del paquete oficial de una extensión cuando está cacheado.
+  Mantener un catálogo de hashes exhaustivo de las extensiones de terceros es un
+  **no-objetivo explícito** — la mayoría de los compromisos de Joomla entran por una
+  extensión de terceros vulnerable, pero una base de datos curada de hashes de todo
+  el ecosistema de extensiones sería una carga de mantenimiento perpetua e ingrata y
+  queda deliberadamente fuera de alcance (ver el [roadmap](docs/ROADMAP.md)); L3
+  verifica contra el paquete oficial de la extensión solo cuando lo tienes cacheado.
+  Un compromiso de cadena de suministro *aguas arriba* del baseline que le das queda
+  fuera de su alcance (la integridad del baseline se verifica contra el catálogo
+  embebido en tiempo de scan — ver L7 / `BASELINE_UNTRUSTED`).
 - **La capa temporal confía en ctime bajo un modelo de amenaza declarado** (un
   atacante con privilegios de www-data, sin root). Un atacante con root que pueda
   reescribir el ctime la vence; el backdating (`mtime << ctime`) es explícitamente

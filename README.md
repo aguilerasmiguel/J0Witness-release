@@ -25,6 +25,30 @@ for a human to decide whether a compromise occurred.
 
 ---
 
+## Who it's for
+
+J0Witness is built for the people who are *handed* a Joomla site and have to
+produce a document about it — not primarily for the site owner scanning their own
+box:
+
+- **Incident-response consultants** given a site that was taken offline "just in
+  case" — now they have a tarball and a database dump, and must issue a findings
+  report a client (or a proceeding) will read.
+- **Hosting providers and MSPs** managing many Joomla installations, who need a
+  repeatable, offline verdict per site without logging into each one live.
+- **Agencies inheriting third-party sites** who must audit what they are taking on
+  before they own the liability.
+
+What these share: they need a **defensible deliverable**. That is why the
+reproducible build, the deterministic output, and the **PDF report** are not
+decoration — they are the product. Being able to hand over a report and say *"re-run
+this and it comes out byte-for-byte identical"* carries weight in a procedure. And
+because the analysis is **offline**, it works in exactly the scenario where live
+scanners (Wordfence, Sucuri, and the like) cannot: the site is already down and all
+you have is the files and the dump.
+
+---
+
 ## Why it exists
 
 J0Witness is built with the following principles: 
@@ -38,7 +62,12 @@ J0Witness is built with the following principles:
   produces byte-identical output, and the binary itself is a reproducible build —
   both properties matter when the report is used as evidence.
 - **A false positive is treated as a severe defect.** The engine degrades toward
-  silence rather than crying wolf; every finding is meant to be actionable.
+  silence rather than crying wolf; every finding is meant to be actionable. This is
+  the right default for CI and monitoring, where noise kills adoption. For hands-on
+  incident response the trade-off inverts — a missed backdoor costs far more than a
+  few files an analyst dismisses — so a planned *sensitivity / IR mode* (see the
+  [roadmap](docs/ROADMAP.md)) will surface the sub-threshold observations for a human
+  to triage, without changing the conservative default.
 
 ## What it does
 
@@ -68,10 +97,29 @@ Plus:
   it before the diff trusts them, and the scan hard-refuses (`BASELINE_UNTRUSTED`)
   on tampering.
 - **Four report projections** from one canonical JSON: `json` · `text` · `pdf` ·
-  `sarif` (for CI / code-scanning integration).
+  `sarif`. The `pdf` is the **client-facing deliverable** — the document an IR
+  consultant or MSP hands over; `sarif` feeds CI / code-scanning; `json` is the
+  machine-canonical source every other projection is derived from, purely and
+  deterministically.
 - **Bilingual reports**: `--language en|es`.
 - **False-positive suppression**: a declarative exclusions file where the reason is
   mandatory and every suppression is echoed back in the report.
+
+## Download
+
+Prebuilt **static binaries** (Linux `amd64` / `arm64`) are attached to each
+[GitHub Release](https://github.com/aguilerasmiguel/J0Witness-release/releases),
+alongside a `SHA256SUMS.txt`. No dependencies — verify, mark executable, run:
+
+```sh
+sha256sum -c SHA256SUMS.txt
+chmod +x j0witness-linux-amd64
+./j0witness-linux-amd64 --help
+```
+
+The build is **reproducible**: from a checkout at the release tag,
+`make -C src build-all VERSION=<tag>` produces the exact same binaries (identical
+SHA256). To build from source yourself, see **[docs/BUILD.md](docs/BUILD.md)**.
 
 ## Quick start
 
@@ -141,9 +189,15 @@ and drift between two scans of the same site.
 - **Its ground truth is the official distribution and the embedded catalog.** Files
   the vendor does not ship (third-party extension internals, uploads, user content)
   are attributed and contextualized, not deeply verified beyond an extension's
-  official-package hash when it is cached. A supply-chain compromise *upstream* of
-  the baseline you feed it is outside its reach (baseline integrity is now verified
-  against the embedded catalog at scan time — see L7 / `BASELINE_UNTRUSTED`).
+  official-package hash when it is cached. Maintaining a comprehensive hash catalog
+  of third-party extensions is an **explicit non-goal** — most Joomla compromises
+  enter through a vulnerable third-party extension, but a curated hash database of
+  the whole extension ecosystem would be a perpetual, thankless maintenance burden
+  and is deliberately out of scope (see the [roadmap](docs/ROADMAP.md)); L3 verifies
+  against the official extension package only when you have cached it. A
+  supply-chain compromise *upstream* of the baseline you feed it is outside its
+  reach (baseline integrity is verified against the embedded catalog at scan time —
+  see L7 / `BASELINE_UNTRUSTED`).
 - **The temporal layer trusts ctime under a declared threat model** (an attacker
   with www-data privileges, no root). A root-level attacker who can rewrite ctime
   defeats it; backdating (`mtime << ctime`) is explicitly a non-goal because it is
